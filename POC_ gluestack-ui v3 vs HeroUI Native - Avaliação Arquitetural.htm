@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>POC: gluestack-ui v3 vs HeroUI Native - Avaliação Arquitetural</title>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #1a1a1a; max-width: 800px; margin: 0 auto; padding: 20px 20px; }
+  h1 { font-size: 22pt; color: #1a1a1a; border-bottom: 3px solid #006FEE; padding-bottom: 8px; margin-top: 0; }
+  h2 { font-size: 16pt; color: #006FEE; margin-top: 30px; border-bottom: 1px solid #e0e0e0; padding-bottom: 4px; }
+  h3 { font-size: 13pt; color: #333; margin-top: 20px; }
+  h4 { font-size: 11pt; color: #555; margin-top: 16px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10pt; }
+  th { background: #006FEE; color: white; padding: 8px 12px; text-align: left; font-weight: 600; }
+  td { border: 1px solid #ddd; padding: 6px 12px; }
+  tr:nth-child(even) td { background: #f8f9fa; }
+  .highlight { background: #e8f4fd; border-left: 4px solid #006FEE; padding: 12px 16px; margin: 16px 0; border-radius: 0 4px 4px 0; }
+  .warning { background: #fff3e0; border-left: 4px solid #F5A524; padding: 12px 16px; margin: 16px 0; border-radius: 0 4px 4px 0; }
+  .score-bar { height: 20px; border-radius: 4px; display: inline-block; }
+  code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-size: 10pt; font-family: 'Consolas', 'Courier New', monospace; }
+  .badge-green { background: #17C964; color: white; padding: 2px 8px; border-radius: 4px; font-size: 9pt; font-weight: 600; }
+  .badge-yellow { background: #F5A524; color: white; padding: 2px 8px; border-radius: 4px; font-size: 9pt; font-weight: 600; }
+  .cover { text-align: center; padding: 60px 0 40px; }
+  .cover h1 { border: none; font-size: 28pt; }
+  .cover .subtitle { font-size: 14pt; color: #666; margin-top: 8px; }
+  .cover .meta { font-size: 11pt; color: #888; margin-top: 30px; }
+  .toc { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+  .toc li { margin: 4px 0; }
+  .page-break { page-break-before: always; }
+  .footer { text-align: center; font-size: 9pt; color: #aaa; margin-top: 40px; border-top: 1px solid #e0e0e0; padding-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="cover">
+  <h1>POC: Mobile Design System</h1>
+  <div class="subtitle">Avaliação Arquitetural de Bibliotecas de Componentes UI<br>gluestack-ui v3 vs HeroUI Native</div>
+  <div class="meta">
+    <p><strong>Tecnologia:</strong> React Native + TypeScript + Expo</p>
+  </div>
+</div>
+
+<!-- SUMÁRIO -->
+<div class="toc">
+  <h3 style="margin-top:0">Sumário</h3>
+  <ol>
+    <li>Resumo Executivo</li>
+    <li>Contexto e Objetivo</li>
+    <li>Bibliotecas Avaliadas</li>
+    <li>Metodologia da POC</li>
+    <li>Resultados de Benchmark</li>
+    <li>Matriz Comparativa</li>
+    <li>Análise Detalhada por Critério</li>
+    <li>Riscos Identificados</li>
+    <li>Recomendação Final</li>
+  </ol>
+</div>
+
+<!-- 1. RESUMO EXECUTIVO -->
+<h2>1. Resumo Executivo</h2>
+
+<div class="highlight">
+  <strong>Recomendação:</strong> Adotar <strong>gluestack-ui v3</strong> como biblioteca padrão de componentes UI para aplicativos mobile React Native.
+</div>
+
+<table>
+  <tbody><tr><th>Critério</th><th>gluestack-ui v3</th><th>HeroUI Native</th></tr>
+  <tr><td><strong>Pontuação Final</strong></td><td><strong>4.60 / 5.00</strong> <span class="badge-green">Recomendado</span></td><td><strong>3.40 / 5.00</strong> <span class="badge-yellow">Promissor</span></td></tr>
+  <tr><td>Status</td><td>Estável (v3, production-ready)</td><td>Beta (RC1, fev/2026)</td></tr>
+  <tr><td>Linhas de Código (4 telas)</td><td>661</td><td>868</td></tr>
+  <tr><td>node_modules</td><td>462 MB</td><td>429 MB</td></tr>
+  <tr><td>Setup time</td><td>~5 min (CLI automatizado)</td><td>~10-15 min (manual)</td></tr>
+  <tr><td>Styling</td><td>NativeWind (Tailwind CSS v3)</td><td>Uniwind (Tailwind CSS v4)</td></tr>
+</tbody></table>
+
+<!-- 2. CONTEXTO -->
+<h2>2. Contexto e Objetivo</h2>
+
+<p>A empresa necessita padronizar uma biblioteca de componentes UI para 
+desenvolvimento de aplicativos mobile com React Native e TypeScript. A 
+escolha impacta:</p>
+<ul>
+  <li>Velocidade de desenvolvimento e produtividade do time</li>
+  <li>Consistência visual entre telas e produtos</li>
+  <li>Alinhamento entre times de design e desenvolvimento</li>
+  <li>Manutenção e evolução a longo prazo</li>
+  <li>Performance dos aplicativos em produção</li>
+</ul>
+
+<!-- 3. BIBLIOTECAS -->
+<h2>3. Bibliotecas Avaliadas</h2>
+
+<h3>gluestack-ui v3</h3>
+<table>
+  <tbody><tr><td><strong>Website</strong></td><td>https://gluestack.io</td></tr>
+  <tr><td><strong>GitHub Stars</strong></td><td>~4.900</td></tr>
+  <tr><td><strong>Mantido por</strong></td><td>GeekyAnts (15+ anos, 600+ clientes)</td></tr>
+  <tr><td><strong>Modelo</strong></td><td>Copy-paste (você possui o código)</td></tr>
+  <tr><td><strong>Styling</strong></td><td>NativeWind v4 (Tailwind CSS via className)</td></tr>
+  <tr><td><strong>Figma</strong></td><td>Kit completo + Plugin + Spec sheets</td></tr>
+  <tr><td><strong>Status</strong></td><td>Estável (v3), production-ready</td></tr>
+</tbody></table>
+
+<h3>HeroUI Native v3</h3>
+<table>
+  <tbody><tr><td><strong>Website</strong></td><td>https://v3.heroui.com/docs/native</td></tr>
+  <tr><td><strong>GitHub Stars</strong></td><td>~2.965 (native) / ~28.000 (web)</td></tr>
+  <tr><td><strong>Mantido por</strong></td><td>HeroUI Inc (evolução do NextUI)</td></tr>
+  <tr><td><strong>Modelo</strong></td><td>Living library (npm package, updates automáticos)</td></tr>
+  <tr><td><strong>Styling</strong></td><td>Uniwind v1.3 (Tailwind CSS v4 via className)</td></tr>
+  <tr><td><strong>Figma</strong></td><td>Kit V3 no Figma Community</td></tr>
+  <tr><td><strong>Status</strong></td><td>Beta (RC1, fev/2026)</td></tr>
+</tbody></table>
+
+<!-- 4. METODOLOGIA -->
+<h2>4. Metodologia da POC</h2>
+
+<p>Dois projetos Expo idênticos foram criados com a mesma stack técnica:</p>
+<ul>
+  <li>Expo SDK 54, React Native 0.81.5, TypeScript ~5.9</li>
+  <li>Expo Router com navegação por tabs</li>
+  <li>4 telas idênticas implementadas em cada projeto</li>
+</ul>
+
+<table>
+  <tbody><tr><th>Tela</th><th>Descrição</th><th>Componentes Testados</th></tr>
+  <tr><td>Forms</td><td>Formulário completo</td><td>TextInput, Radio, Switch, Button, validação</td></tr>
+  <tr><td>Cards</td><td>Cards e listas</td><td>FlatList, Card, Avatar, Skeleton, Badge</td></tr>
+  <tr><td>Feedback</td><td>Feedback e overlays</td><td>Toast, Alert, Loading, Modal/BottomSheet</td></tr>
+  <tr><td>Theming</td><td>Customização de tema</td><td>Dark/Light toggle, paleta de cores, overrides</td></tr>
+</tbody></table>
+
+<!-- 5. BENCHMARKS -->
+<h2 class="page-break">5. Resultados de Benchmark</h2>
+
+<h3>5.1 Linhas de Código</h3>
+<table>
+  <tbody><tr><th>Arquivo</th><th>gluestack-ui (NativeWind)</th><th>HeroUI (Uniwind)</th></tr>
+  <tr><td>_layout.tsx</td><td>61</td><td>54</td></tr>
+  <tr><td>index.tsx (Forms)</td><td>168</td><td>236</td></tr>
+  <tr><td>cards.tsx</td><td>147</td><td>179</td></tr>
+  <tr><td>feedback.tsx</td><td>132</td><td>209</td></tr>
+  <tr><td>theming.tsx</td><td>153</td><td>190</td></tr>
+  <tr><td><strong>Total</strong></td><td><strong>661</strong></td><td><strong>868</strong></td></tr>
+</tbody></table>
+
+<div class="highlight">
+  O gluestack-ui requer <strong>~24% menos código</strong> para implementar as mesmas telas, graças ao sistema de design tokens integrado e toast embutido no provider.
+</div>
+
+<h3>5.2 Tamanho do Projeto</h3>
+<table>
+  <tbody><tr><th>Métrica</th><th>gluestack-ui</th><th>HeroUI Native</th></tr>
+  <tr><td>node_modules</td><td>462 MB</td><td>429 MB</td></tr>
+  <tr><td>Dependências (prod)</td><td>27</td><td>26</td></tr>
+  <tr><td>Dependências (dev)</td><td>6</td><td>3</td></tr>
+  <tr><td>Total</td><td>33</td><td>29</td></tr>
+</tbody></table>
+
+<h3>5.3 Tempo de Setup</h3>
+<table>
+  <tbody><tr><th>Etapa</th><th>gluestack-ui</th><th>HeroUI Native</th></tr>
+  <tr><td>Instalar biblioteca</td><td><code>npx gluestack-ui init</code></td><td><code>npm install heroui-native</code> + 9 peer deps</td></tr>
+  <tr><td>Configurar Tailwind</td><td>Automático (CLI)</td><td><code>npm install uniwind tailwindcss</code> + config manual</td></tr>
+  <tr><td>Arquivos de config</td><td>Automático</td><td>metro.config.js + global.css + tsconfig (manual)</td></tr>
+  <tr><td><strong>Tempo total</strong></td><td><strong>~5 min</strong></td><td><strong>~10-15 min</strong></td></tr>
+</tbody></table>
+
+<h3>5.4 Performance (dados oficiais)</h3>
+<table>
+  <tbody><tr><th>Métrica</th><th>gluestack-ui</th><th>HeroUI Native</th></tr>
+  <tr><td>Render time</td><td>~99ms</td><td>&lt;16ms *</td></tr>
+  <tr><td>Bundle gzip</td><td>&lt;80KB</td><td>~45% menor que legacy *</td></tr>
+</tbody></table>
+<p><em>* Dados de marketing do HeroUI, não verificados independentemente.</em></p>
+
+<!-- 6. MATRIZ -->
+<h2 class="page-break">6. Matriz Comparativa</h2>
+
+<table>
+  <tbody><tr><th>#</th><th>Critério</th><th>Peso</th><th>gluestack-ui</th><th>HeroUI Native</th></tr>
+  <tr><td>1</td><td>Maturidade e Estabilidade</td><td>20%</td><td><strong>5</strong></td><td>2</td></tr>
+  <tr><td>2</td><td>Comunidade e Suporte</td><td>15%</td><td><strong>4</strong></td><td>3</td></tr>
+  <tr><td>3</td><td>Design System (Figma)</td><td>15%</td><td><strong>5</strong></td><td>4</td></tr>
+  <tr><td>4</td><td>Performance</td><td>15%</td><td>4</td><td>4</td></tr>
+  <tr><td>5</td><td>DX (Developer Experience)</td><td>15%</td><td><strong>5</strong></td><td>4</td></tr>
+  <tr><td>6</td><td>Customização</td><td>10%</td><td><strong>5</strong></td><td>4</td></tr>
+  <tr><td>7</td><td>Manutenção</td><td>5%</td><td><strong>4</strong></td><td>3</td></tr>
+  <tr><td>8</td><td>Componentes Disponíveis</td><td>5%</td><td>4</td><td>4</td></tr>
+  <tr><td colspan="3"><strong>TOTAL PONDERADO</strong></td><td><strong>4.60</strong></td><td><strong>3.40</strong></td></tr>
+</tbody></table>
+
+<h3>Visualização</h3>
+<p>
+  <strong>gluestack-ui v3</strong><br>
+  <span class="score-bar" style="width:92%; background: #006FEE;">&nbsp;</span> 4.60/5.00
+</p>
+<p>
+  <strong>HeroUI Native</strong><br>
+  <span class="score-bar" style="width:68%; background: #F5A524;">&nbsp;</span> 3.40/5.00
+</p>
+
+<!-- 7. ANÁLISE DETALHADA -->
+<h2>7. Análise Detalhada por Critério</h2>
+
+<h3>7.1 Maturidade e Estabilidade (20%)</h3>
+<p><strong>gluestack-ui (5/5):</strong> Versão estável v3, 
+prodution-ready. Evolução do NativeBase com 15+ anos da GeekyAnts. 
+Histórico claro de releases sem breaking changes frequentes.</p>
+<p><strong>HeroUI Native (2/5):</strong> Beta (RC1). Primeira versão para React Native. 13 beta releases + 1 RC. Mudanças de API esperadas antes da estabilidade.</p>
+
+<h3>7.2 Comunidade e Suporte (15%)</h3>
+<p><strong>gluestack-ui (4/5):</strong> ~4.900 stars, Discord ativo, backed by GeekyAnts, documentação completa, canal YouTube com tutoriais.</p>
+<p><strong>HeroUI Native (3/5):</strong> ~2.965 stars (native), ~28.000 stars (web), Discord compartilhado, documentação em construção.</p>
+
+<h3>7.3 Design System / Figma (15%)</h3>
+<p><strong>gluestack-ui (5/5):</strong> Kit Figma com 30+ componentes e 
+4536 styles. Plugin Figma dedicado. Spec sheets com estrutura, 
+propriedades e use cases. Design tokens 1:1 com código.</p>
+<p><strong>HeroUI Native (4/5):</strong> Kit Figma V3 disponível. Design tokens definidos. Sem plugin Figma dedicado.</p>
+
+<h3>7.4 Performance (15%)</h3>
+<p><strong>Ambos (4/5):</strong> gluestack usa NativeWind com estilos 
+pré-compilados. HeroUI claims &lt;16ms render. Ambos tree-shakable. 
+Benchmarks reais devem ser coletados em dispositivo físico.</p>
+
+<h3>7.5 Developer Experience (15%)</h3>
+<p><strong>gluestack-ui (5/5):</strong> CLI automatizado, design tokens via CSS variables (<code>bg-primary-500</code>), theming automático, 661 LOC para 4 telas.</p>
+<p><strong>HeroUI Native (4/5):</strong> Com Uniwind configurado, usa 
+className efetivamente. Componentes reais (Button, Switch). Porém: setup
+ manual, sem design tokens (<code>bg-[#006FEE]</code>), theming manual.</p>
+
+<h3>7.6 Customização (10%)</h3>
+<p><strong>gluestack-ui (5/5):</strong> Copy-paste = 100% do código é seu. Sem vendor lock-in.</p>
+<p><strong>HeroUI Native (4/5):</strong> Slots customizáveis, Tailwind Variants. Limitado ao que a API expõe.</p>
+
+<!-- 8. RISCOS -->
+<h2 class="page-break">8. Riscos Identificados</h2>
+
+<h3>Riscos do HeroUI Native</h3>
+<table>
+  <tbody><tr><th>Risco</th><th>Severidade</th><th>Descrição</th></tr>
+  <tr><td>Beta instável</td><td style="color:#F31260"><strong>Alta</strong></td><td>RC1 com potencial para breaking changes antes da v1</td></tr>
+  <tr><td>Setup manual</td><td style="color:#F5A524"><strong>Média</strong></td><td>3 arquivos de config manual (metro, css, tsconfig)</td></tr>
+  <tr><td>Sem design tokens</td><td style="color:#F5A524"><strong>Média</strong></td><td>Usa hex arbitrários ao invés de tokens semânticos</td></tr>
+  <tr><td>Peer deps fixas</td><td style="color:#F5A524"><strong>Média</strong></td><td>9 dependências com versões pinadas, risco de conflito</td></tr>
+  <tr><td>Comunidade menor</td><td>Baixa</td><td>2.9K stars, menos conteúdo de suporte</td></tr>
+</tbody></table>
+
+<h3>Riscos do gluestack-ui</h3>
+<table>
+  <tbody><tr><th>Risco</th><th>Severidade</th><th>Descrição</th></tr>
+  <tr><td>Manutenção manual</td><td>Baixa</td><td>Copy-paste requer disciplina para manter componentes atualizados</td></tr>
+  <tr><td>NativeWind dependency</td><td>Baixa</td><td>Depende do NativeWind (amplamente adotado)</td></tr>
+  <tr><td>Tailwind v3</td><td>Baixa</td><td>Usa Tailwind v3, enquanto v4 já está disponível</td></tr>
+</tbody></table>
+
+<!-- 9. RECOMENDAÇÃO -->
+<h2>9. Recomendação Final</h2>
+
+<div class="highlight">
+  <h3 style="margin-top:0; color:#006FEE">Recomendação: gluestack-ui v3</h3>
+  <p>Adotar como biblioteca padrão de componentes UI para aplicativos mobile React Native.</p>
+</div>
+
+<h4>Motivos principais:</h4>
+<ol>
+  <li><strong>Estabilidade:</strong> Versão estável v3 vs beta RC1</li>
+  <li><strong>Produtividade:</strong> 24% menos código com design tokens integrados</li>
+  <li><strong>Setup:</strong> CLI automatizado em ~5 minutos</li>
+  <li><strong>Design System:</strong> Kit Figma completo com plugin + spec sheets</li>
+  <li><strong>Ownership:</strong> Modelo copy-paste = controle total sem vendor lock-in</li>
+</ol>
+
+<h4>Pontos fortes reconhecidos do HeroUI Native:</h4>
+<ul>
+  <li>Componentes reais (Button, Switch) com boa tipagem</li>
+  <li>Bundle ~7% menor</li>
+  <li>Tailwind CSS v4 (mais recente)</li>
+  <li>Se atingir v1 estável com design tokens, será alternativa forte</li>
+</ul>
+
+<h3>Métricas de Sucesso</h3>
+<ol>
+  <li>Tempo de desenvolvimento de telas: deve ser ≤ padrão atual</li>
+  <li>Bugs de UI: não devem aumentar significativamente</li>
+  <li>Satisfação do time de design: feedback positivo sobre alinhamento Figma-código</li>
+  <li>Performance: render time &lt; 100ms para telas comuns</li>
+</ol>
+
+<!-- REFERÊNCIAS -->
+<h2>Referências</h2>
+<ul>
+  <li>gluestack-ui v3 Docs: https://gluestack.io/ui/docs/home/overview/quick-start</li>
+  <li>gluestack-ui GitHub: https://github.com/gluestack/gluestack-ui</li>
+  <li>gluestack Figma Kit: https://gluestack.io/ui/docs/home/getting-started/figma-ui-kit</li>
+  <li>HeroUI Native Docs: https://v3.heroui.com/docs/native/getting-started</li>
+  <li>HeroUI Native GitHub: https://github.com/heroui-inc/heroui-native</li>
+  <li>HeroUI Figma Kit V3: https://www.figma.com/community/file/1546526812159103429</li>
+  <li>Uniwind Docs: https://docs.uniwind.dev/quickstart</li>
+</ul>
+
+<div class="footer">
+  POC Mobile Design System<br>
+  Qualquer dúvida só falar com o time de contexto de aplicativos.
+</div>
+
+
+
+</body></html>
